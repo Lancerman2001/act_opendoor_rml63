@@ -1,0 +1,32 @@
+name: Source and CPU checks
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-python@v7.1.0
+        with:
+          python-version: '3.12'
+      - name: Install CPU test environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          python -m pip install uv==0.12.6
+          uv pip install --system --torch-backend=cpu \
+            'torch==2.14.1' 'torchvision==0.29.1' 'torchcodec==0.17.0' \
+            'lerobot[training]==0.7.0' 'matplotlib==3.11.2'
+      - name: Unit tests
+        run: python -m unittest discover -s tests -v
+      - name: Shell syntax and release boundaries
+        run: |
+          bash -n setup.sh env.sh run.sh train.sh evaluate.sh benchmark.sh
+          python scripts/export_release.py --check-only

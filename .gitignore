@@ -1,0 +1,46 @@
+# Local environments, model downloads, datasets, and experiment output.
+/.venv/
+/.cache/
+/data/
+/runs/
+/reports/
+/logs/
+/vendor/
+/tools/
+/dist/
+
+# Machine-specific configuration and credentials.
+.env
+.env.*
+!.env.example
+/configs/local.yaml
+/configs/local.yml
+/configs/*.local.yaml
+/configs/*.local.yml
+*.pem
+*.key
+
+# Python/editor/build artifacts.
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.egg-info/
+build/
+.DS_Store
+.idea/
+.vscode/
+
+# Large artifacts should be published separately, not committed accidentally.
+*.safetensors
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.mp4
+*.parquet
+*.tar.gz
+*.zip

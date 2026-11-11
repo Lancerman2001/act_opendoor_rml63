@@ -1,0 +1,13 @@
+# This file overrides configs/train.yaml defaults, without modifying them.
+training:
+  run_name: act_smoke
+  steps: 20
+  batch_size: 2
+logging:
+  every_steps: 1
+checkpoint:
+  every_steps: 10
+plot:
+  smoothing_window: 3
+evaluation:
+  enabled: false

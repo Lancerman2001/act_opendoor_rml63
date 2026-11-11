@@ -1,0 +1,66 @@
+# All relative paths are resolved from the repository root.
+schema_version: 1
+
+dataset:
+  source: data/source              # Your converted LeRobot Dataset v3 directory
+  root: data/full                  # Prepared local copy with training-only statistics
+  split_file: data/split.json
+  repo_id: local/open_door
+  train_ratio: 0.8
+  seed: 42
+  video_backend: torchcodec
+
+policy:
+  type: act
+  device: cuda
+  vision_backbone: resnet18
+  pretrained_backbone_weights: ResNet18_Weights.IMAGENET1K_V1
+  chunk_size: 100
+  n_action_steps: 100
+  optimizer_lr: 0.00001
+  optimizer_lr_backbone: 0.00001
+  kl_weight: 10.0
+
+training:
+  run_name: act_50k
+  output_root: runs
+  output_dir: null                 # Optional explicit directory; otherwise output_root/run_name
+  steps: 50000
+  batch_size: 32                   # Positive integer, or auto with a matching benchmark report
+  num_workers: 2
+  prefetch_factor: 2
+  mixed_precision: bf16            # bf16, fp16, or "no"
+  seed: 42
+  resume_config: null              # .../pretrained_model/train_config.json
+
+logging:
+  every_steps: 100                 # 1 records each step; 100 records each 100-step mean
+
+checkpoint:
+  every_steps: 10000               # The final step is also saved
+
+plot:
+  enabled: true
+  formats: [png, pdf]
+  dpi: 160
+  smoothing_window: 20             # Recorded rows, not optimizer steps
+
+monitor:
+  interval_seconds: 2.0
+  temperature_limit_c: 90.0
+  min_host_free_mib: 750.0
+
+evaluation:
+  enabled: true
+  samples_per_episode: 64
+  batch_size: 8
+  num_workers: 2
+  all_frames: false
+
+benchmark:
+  enabled: false
+  report_dir: reports/batch_benchmark
+  batches: [2, 4, 8, 16, 32, 48, 64]
+  warmup: 5
+  steps: 15
+  headroom_gib: 2.0
